@@ -304,7 +304,7 @@ GET /health
 
 ## 👨‍💻 Author
 
-**Abdullah Sohail**
+**safi hamid**
 
 Machine Learning & Data Science Project
 
