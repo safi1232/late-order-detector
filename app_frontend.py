@@ -9,7 +9,7 @@ from datetime import datetime
 # CONFIGURATION
 # ============================================================
 
-API_BASE_URL = "http://0.0.0.0:8080"
+API_BASE_URL = "https://late-order-detector.fastapicloud.dev"
 PREDICT_URL = f"{API_BASE_URL}/predict"
 HEALTH_URL = f"{API_BASE_URL}/health"
 
