@@ -7,3 +7,4 @@ numpy==2.5.1
 joblib==1.5.3
 streamlit==1.61.1
 requests==2.31.0
+plotly
