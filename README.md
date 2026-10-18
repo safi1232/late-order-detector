@@ -1,77 +1,88 @@
 # 📦 SupplyGuard — Supply Chain Late Order Detection
 
-SupplyGuard is an end-to-end **Machine Learning application for predicting late purchase-order deliveries**. It uses a trained classification model to identify delivery risks and provides an interactive dashboard for predictions, risk analysis, model monitoring, and API health tracking.
+**Predict late purchase-order deliveries using Machine Learning, FastAPI, and an interactive web dashboard.**
+
+SupplyGuard is an end-to-end Machine Learning application designed to identify purchase orders at risk of late delivery. It combines a trained classification model with a FastAPI backend and a web-based dashboard to deliver predictions, delivery risk scores, probability estimates, and model health information.
+
+🌐 **Live Application:** [SupplyGuard](https://lateoreder.pages.dev/)
 
 ---
-App URL:https://late-order-detector-uuohnrvs8t2qgr9gj7mpsx.streamlit.app/
+
 ## 🚀 Features
 
-* 📦 Purchase order late-delivery prediction
-* 🤖 Machine Learning classification model
-* ⚡ FastAPI REST API for model inference
-* 📊 Interactive Streamlit dashboard
-* 📈 Late-delivery probability and risk score
-* 🎯 Prediction confidence
-* 🧠 Model version tracking
-* 📋 Prediction history
-* 🔌 API health monitoring
-* 🛡️ Input validation and error handling
-* 📊 Interactive Plotly visualizations
+- 📦 **Late Delivery Prediction** — Predict whether a purchase order will arrive on time or late.
+- 🤖 **Machine Learning Classification** — Generate predictions using a trained classification pipeline.
+- ⚡ **FastAPI Backend** — Serve model inference through REST API endpoints.
+- 📊 **Interactive Dashboard** — Explore delivery risks and prediction results.
+- 📈 **Risk Score** — Assess the estimated probability of late delivery.
+- 🎯 **Prediction Confidence** — View the model's confidence in its prediction.
+- 🧠 **Model Version Tracking** — Retrieve model version and deployment status.
+- 📋 **Prediction History** — Review predictions made during the application session.
+- 🔌 **API Health Monitoring** — Check backend availability and model loading status.
+- 🛡️ **Input Validation** — Validate prediction inputs and handle errors.
+- 📊 **Interactive Visualizations** — Analyze risk distributions and relevant metrics using Plotly.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ System Architecture
+
+SupplyGuard separates the user interface from model inference. The frontend sends requests to the FastAPI backend, which processes the input using the trained Machine Learning pipeline.
 
 ```text
-                ┌─────────────────────┐
-                │    Streamlit UI     │
-                │                     │
-                │  SupplyGuard        │
-                └──────────┬──────────┘
-                           │
-                           │ HTTP Request
-                           ▼
-                ┌─────────────────────┐
-                │     FastAPI API     │
-                │                     │
-                │   POST /predict     │
-                │   GET  /health      │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │  ML Prediction      │
-                │     Pipeline        │
-                └─────────────────────┘
+┌──────────────────────────────┐
+│        Web Frontend          │
+│                              │
+│       SupplyGuard UI         │
+└──────────────┬───────────────┘
+               │
+               │ HTTP Requests
+               ▼
+┌──────────────────────────────┐
+│         FastAPI API          │
+│                              │
+│        POST /predict         │
+│         GET /health          │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│    Machine Learning Model    │
+│                              │
+│    Trained Classification    │
+│          Pipeline            │
+└──────────────────────────────┘
 ```
 
-The Streamlit frontend **does not perform model inference directly**. All predictions are sent to the FastAPI backend.
+**Architecture note:** The frontend is deployed on Cloudflare Pages. The FastAPI backend must be deployed separately and configured to accept requests from the frontend.
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Python**
-* **Scikit-learn**
-* **Pandas**
-* **FastAPI**
-* **Streamlit**
-* **Plotly**
-* **Requests**
-* **Docker** *(optional for deployment)*
+| Technology | Purpose |
+|---|---|
+| Python | Core programming language |
+| Scikit-learn | Machine Learning model and prediction pipeline |
+| Pandas | Input data processing |
+| FastAPI | REST API and model inference |
+| Streamlit | Interactive dashboard, if using the Streamlit version |
+| Plotly | Interactive data visualizations |
+| Requests | HTTP communication with the backend |
+| Cloudflare Pages | Frontend hosting |
+| Docker | Optional containerization and deployment |
 
 ---
 
-## 📊 Prediction
+## 📊 Prediction Output
 
-The system predicts two classes:
+SupplyGuard predicts one of two classes:
 
-| Class | Meaning    |
-| ----: | ---------- |
-|   `0` | 🟢 On Time |
-|   `1` | 🔴 Late    |
+| Class | Prediction |
+|---:|---|
+| `0` | 🟢 On Time |
+| `1` | 🔴 Late |
 
-The API returns:
+### Example API Response
 
 ```json
 {
@@ -87,22 +98,175 @@ The API returns:
 }
 ```
 
-### Risk Levels
+*Example response for illustration; actual output depends on the model and input.*
 
-| Risk Score | Level     |
-| ---------: | --------- |
-|      0–30% | 🟢 Low    |
-|     31–60% | 🟡 Medium |
-|    61–100% | 🔴 High   |
+### Delivery Risk Levels
+
+| Late-delivery probability | Risk level |
+|---:|---|
+| 0–30% | 🟢 Low |
+| 31–60% | 🟡 Medium |
+| 61–100% | 🔴 High |
+
+These risk bands represent the application's configured thresholds, not independently validated operational risk categories.
 
 ---
 
-## 📦 Project Structure
+## 🔌 API Endpoints
+
+### Health Check
+
+```http
+GET /health
+```
+
+Checks backend availability and reports model status and version.
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "version": "1.0.0",
+  "model_loaded": true
+}
+```
+
+### Late Order Prediction
+
+```http
+POST /predict
+```
+
+Accepts purchase-order features and returns the predicted delivery class, confidence, and class probabilities.
+
+For interactive API documentation, open `/docs` on your deployed FastAPI backend.
+
+---
+
+## 📋 Dashboard Modules
+
+### Overview
+View key supply-chain metrics and delivery-risk distributions.
+
+### Late Order Prediction
+Enter purchase-order information and receive a model-generated delivery prediction.
+
+### Model Tracker
+Review the deployed model version, availability, and reported status.
+
+### Prediction History
+Review predictions recorded during the current application session.
+
+### API Health
+Monitor backend connectivity, model availability, and reported version information.
+
+*Available modules depend on the deployed frontend version.*
+
+---
+
+## 🧠 Model Monitoring
+
+SupplyGuard uses the FastAPI health endpoint to report the status of the deployed inference service.
+
+Example model status:
+
+| Property | Example |
+|---|---|
+| Model | Late Order Classifier |
+| Version | 1.0.0 |
+| Status | Production |
+| Model Loaded | Yes |
+
+These are illustrative values; the dashboard should display actual backend responses.
+
+---
+
+## 💻 Local Development
+
+### Prerequisites
+
+- Python 3.10 or a compatible version for your dependencies
+- pip
+- Git
+
+### 1. Clone the Repository
+
+Replace the placeholder with your actual GitHub repository URL.
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+cd YOUR_REPOSITORY
+```
+
+### 2. Create a Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+Activate it on Windows:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Start the FastAPI Backend
+
+```bash
+uvicorn app:app --reload
+```
+
+The local API will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+### 5. Start the Frontend
+
+Use the command appropriate for your frontend implementation.
+
+**For a Streamlit frontend:**
+
+```bash
+streamlit run frontend.py
+```
+
+**For a React/Vite frontend:**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Make sure the frontend is configured to communicate with the running FastAPI backend.
+
+---
+
+## 📁 Project Structure
+
+The following is an example of the backend structure. Actual filenames may differ depending on the repository.
 
 ```text
 SupplyGuard/
 │
 ├── app.py
+├── requirements.txt
+├── README.md
 │
 ├── model/
 │   ├── predict.py
@@ -123,193 +287,47 @@ SupplyGuard/
 ├── services/
 │   └── api.py
 │
-├── utils/
-│   └── helpers.py
-│
-├── requirements.txt
-└── README.md
+└── utils/
+    └── helpers.py
 ```
 
 ---
 
-## ⚙️ Backend Setup
+## 🔒 Important Implementation Details
 
-Clone the repository:
-
-```bash
-git clone https://github.com/YOUR_USERNAME/SupplyGuard.git
-cd SupplyGuard
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate it on Windows:
-
-```powershell
-.venv\Scripts\activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Start the FastAPI backend:
-
-```bash
-uvicorn app:app --reload
-```
-
-The API will be available at:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-## 🎨 Start the Streamlit Frontend
-
-Open another terminal with the virtual environment activated and run:
-
-```bash
-streamlit run frontend.py
-```
-
-The Streamlit application will open in your browser.
-
-Make sure the FastAPI backend is running before making predictions.
-
----
-
-## 🔌 API Endpoints
-
-### Health Check
-
-```http
-GET /health
-```
-
-Example:
-
-```json
-{
-  "status": "ok",
-  "version": "1.0.0",
-  "model_loaded": true
-}
-```
-
-### Prediction
-
-```http
-POST /predict
-```
-
-The endpoint accepts purchase-order information and returns the predicted delivery class, confidence, and probability distribution.
-
----
-
-## 📋 Dashboard
-
-The SupplyGuard dashboard includes:
-
-### Overview
-
-Monitor high-level supply-chain metrics and risk distribution.
-
-### Late Order Prediction
-
-Enter purchase-order information and analyze its delivery risk.
-
-### Model Tracker
-
-Monitor the deployed model version, status, and evaluation metrics.
-
-### Prediction History
-
-Review predictions made during the current application session.
-
-### API Health
-
-Monitor FastAPI connectivity, model availability, version, and response time.
-
----
-
-## 🧠 Model Monitoring
-
-The application tracks the currently deployed model using the FastAPI health endpoint.
-
-Example:
-
-```text
-Model
-Late Order Classifier
-
-Version
-1.0.0
-
-Status
-Production
-
-Model Loaded
-Yes
-```
-
----
-
-## ⚠️ Important
-
-The Streamlit frontend communicates with the model **only through the FastAPI API**.
-
-It does not:
-
-* Load the ML model directly
-* Load `pipe.pkl`
-* Perform inference
-* Modify the FastAPI backend
-
-All predictions are generated through:
-
-```text
-POST /predict
-```
-
-Model health and version are retrieved through:
-
-```text
-GET /health
-```
+- The trained model should be loaded and used by the backend, not independently by the frontend.
+- Prediction requests should be sent to `POST /predict`.
+- Health and model-version information should come from `GET /health`.
+- The production frontend must use the deployed API URL rather than `localhost` or `127.0.0.1`.
+- The backend must allow requests from the deployed frontend origin through an appropriate CORS configuration.
+- Keep model artifacts, credentials, and private environment variables out of public repositories.
 
 ---
 
 ## 🔮 Future Improvements
 
-* Real-time supply-chain analytics
-* Database-backed prediction history
-* User authentication
-* Cloud deployment
-* Automated model retraining
-* Model drift monitoring
-* Feature importance visualization
-* Batch purchase-order prediction
-* Supplier risk analytics
+- Database-backed prediction history
+- Batch purchase-order predictions
+- Supplier-level delivery risk analysis
+- Feature importance and model explainability
+- Model drift monitoring
+- Automated model retraining
+- User authentication and role-based access
+- Real-time supply-chain analytics
+- Containerized deployment and CI/CD
 
 ---
 
 ## 👨‍💻 Author
 
-**safi hamid**
+**Safi Hamid**
 
-Machine Learning & Data Science Project
+Machine Learning & Data Science
 
 ---
 
 ## ⭐ Support
 
-If you find this project useful, consider giving the repository a ⭐ on GitHub.
+If you find SupplyGuard useful, consider starring the repository on GitHub.
+
+Feedback and suggestions for improving the project are welcome.
