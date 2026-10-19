@@ -571,25 +571,6 @@ function App() {
         ]
       : []),
 
-    ...orders
-      .filter(
-        (order) =>
-          order.status.toLowerCase().includes('late') &&
-          !order.status.toLowerCase().includes('on time')
-      )
-      .slice(0, 5)
-      .map((order) => ({
-        id: `late-${order.id}`,
-        title: `Late order: ${order.id}`,
-        message: `Supplier ${order.supplier} · ${order.category}${
-          order.delayDays !== null
-            ? ` · ${order.delayDays} day(s) delayed`
-            : ''
-        }`,
-        type: 'warning' as const,
-        time: formatDate(order.orderDate),
-        page: 'Orders',
-      })),
   ];
 
   const unreadCount = notifications.filter(
